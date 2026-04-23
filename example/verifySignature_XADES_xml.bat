@@ -1,7 +1,18 @@
 @echo off
 setlocal
 
-set JAR=..\target\SigningAuthorisation-0.0.1-SNAPSHOT-all.jar
+
+set "JAR="
+
+for /f "delims=" %%F in ('dir /b /a-d /o-n "..\target\SigningAuthorisation-*-all.jar"') do (
+    if not defined JAR set "JAR=..\target\%%F"
+)
+
+if not defined JAR (
+    echo Kein passendes JAR gefunden.
+    exit /b 1
+)
+
 
 java -jar "%JAR%" verify-xml ^
   --format xades ^

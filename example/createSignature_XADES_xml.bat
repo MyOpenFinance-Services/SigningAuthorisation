@@ -1,7 +1,18 @@
 @echo off
 setlocal
 
-set JAR=..\target\SigningAuthorisation-0.0.1-SNAPSHOT-all.jar
+@echo off
+set "JAR="
+
+for /f "delims=" %%F in ('dir /b /a-d /o-n "..\target\SigningAuthorisation-*-all.jar"') do (
+    if not defined JAR set "JAR=..\target\%%F"
+)
+
+if not defined JAR (
+    echo Kein passendes JAR gefunden.
+    exit /b 1
+)
+
 
 set PAYLOAD=.\pain001.xml
 set OUT=.\result\pain001-signature.xml
@@ -16,7 +27,7 @@ set RES_ID=pain001.myResourceId1234
 
 java -jar "%JAR%" sign-xml ^
   --format xades ^
-  --alg PS512 ^
+  --alg RS512 ^
   --payload "%PAYLOAD%" ^
   --out "%OUT%" ^
   --keystore "%KEYSTORE%" ^
